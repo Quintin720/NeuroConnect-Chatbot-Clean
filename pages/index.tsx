@@ -1,2 +1,8 @@
-// pages/index.tsx
-export default function Home() { return <div>Try the Chatbot</div>; }
+export default function Home() {
+  return (
+    <div>
+      <h1>Welcome to NeuroConnect Chatbot</h1>
+      <p><a href="/api/chat">Try the chatbot</a></p>
+    </div>
+  );
+}
