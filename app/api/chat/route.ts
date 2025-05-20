@@ -1,28 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import OpenAI from "openai";
 
-export async function POST(req: NextRequest) {
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+export async function POST(req: Request) {
   const { message } = await req.json();
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json({ error: 'Missing API Key' }, { status: 500 });
+  if (!message) {
+    return NextResponse.json({ reply: "Missing message" }, { status: 400 });
   }
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: message }],
-    }),
-  });
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        { role: "system", content: "You are a helpful assistant called NeuroBot." },
+        { role: "user", content: message },
+      ],
+    });
 
-  const data = await response.json();
-
-  const reply = data?.choices?.[0]?.message?.content || 'Sorry, I couldn’t think of a reply.';
-
-  return NextResponse.json({ reply });
+    const reply = response.choices?.[0]?.message?.content || "Sorry, I couldn’t think of a reply.";
+    return NextResponse.json({ reply });
+  } catch (error) {
+    console.error("API Error:", error);
+    return NextResponse.json({ reply: "An error occurred while generating a response." }, { status: 500 });
+  }
 }
