@@ -1,15 +1,22 @@
+
+// app/api/chat/route.ts
+
 export async function POST(req: Request) {
   try {
-    const { message } = await req.json();
+    const body = await req.json();
+    const message = body.message || "";
 
-    // Temporary dummy response (you’ll replace this with real logic later)
+    // Dummy response (this is the part you'd replace with real chatbot logic)
     const reply = `You said: ${message}`;
 
-    return new Response(JSON.stringify({ reply }), {
-      headers: { "Content-Type": "application/json" },
-      status: 200,
-    });
-  } catch (error) {
+    return new Response(
+      JSON.stringify({ reply }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  } catch (err) {
     return new Response(
       JSON.stringify({ error: "Something went wrong." }),
       {
