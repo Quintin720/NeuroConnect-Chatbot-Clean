@@ -1,18 +1,21 @@
-import { NextResponse } from 'next/server';
-
 export async function POST(req: Request) {
   try {
     const { message } = await req.json();
 
-    if (!message) {
-      return NextResponse.json({ reply: 'No message provided.' }, { status: 400 });
-    }
+    // Temporary dummy response (you’ll replace this with real logic later)
+    const reply = `You said: ${message}`;
 
-    const reply = `You said: "${message}"`;
-
-    return NextResponse.json({ reply });
+    return new Response(JSON.stringify({ reply }), {
+      headers: { "Content-Type": "application/json" },
+      status: 200,
+    });
   } catch (error) {
-    console.error('API error:', error);
-    return NextResponse.json({ reply: 'Internal server error.' }, { status: 500 });
+    return new Response(
+      JSON.stringify({ error: "Something went wrong." }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }
