@@ -1,10 +1,1 @@
-[
-  {
-    "question": "What is autism?",
-    "answer": "Autism is a neurodevelopmental difference that affects how a person experiences the world, communicates, and interacts with others. It is not a disease and does not need curing."
-  },
-  {
-    "question": "What are the strengths of autistic people?",
-    "answer": "Many autistic people excel in pattern recognition, attention to detail, honesty, focus, and innovative thinking."
-  }
-]
+{"qna":[{"question":"What is autism?","answer":"Autism is a neurodevelopmental difference."}]}
