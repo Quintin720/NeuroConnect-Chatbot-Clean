@@ -1,10 +1,18 @@
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
-  const { message } = await req.json();
+  try {
+    const { message } = await req.json();
 
-  // Basic placeholder logic — this is where AI integration would go
-  const reply = `You said: "${message}"`;
+    if (!message) {
+      return NextResponse.json({ reply: 'No message provided.' }, { status: 400 });
+    }
 
-  return NextResponse.json({ reply });
+    const reply = `You said: "${message}"`;
+
+    return NextResponse.json({ reply });
+  } catch (error) {
+    console.error('API error:', error);
+    return NextResponse.json({ reply: 'Internal server error.' }, { status: 500 });
+  }
 }
