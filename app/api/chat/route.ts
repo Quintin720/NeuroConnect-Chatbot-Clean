@@ -1,29 +1,28 @@
+import { NextRequest, NextResponse } from 'next/server';
 
-// app/api/chat/route.ts
+export async function POST(req: NextRequest) {
+  const { message } = await req.json();
 
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    const message = body.message;
-
-    if (!message) {
-      return new Response(JSON.stringify({ error: "No message provided" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    const reply = `You said: ${message}`;
-
-    return new Response(JSON.stringify({ reply }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    console.error("Error in API route:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return NextResponse.json({ error: 'Missing API Key' }, { status: 500 });
   }
+
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: message }],
+    }),
+  });
+
+  const data = await response.json();
+
+  const reply = data?.choices?.[0]?.message?.content || 'Sorry, I couldn’t think of a reply.';
+
+  return NextResponse.json({ reply });
 }
