@@ -1,1 +1,1 @@
-export async function GET() { return new Response('Chat route'); }
+export async function POST() { return new Response('Hello'); }
