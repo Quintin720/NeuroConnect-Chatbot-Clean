@@ -26,20 +26,21 @@ export async function POST(req: Request) {
       })
     });
 
+    const raw = await openAiRes.text();
+
     if (!openAiRes.ok) {
-      const errorText = await openAiRes.text();
       return new Response(
-        JSON.stringify({ reply: `OpenAI Error: ${errorText}` }),
+        JSON.stringify({ reply: `OpenAI Error: ${raw}` }),
         { status: 500, headers: { "Content-Type": "application/json" } }
       );
     }
 
-    const data = await openAiRes.json();
+    const data = JSON.parse(raw);
     const aiMessage = data.choices?.[0]?.message?.content?.trim();
 
     if (!aiMessage) {
       return new Response(
-        JSON.stringify({ reply: "No response from AI." }),
+        JSON.stringify({ reply: "No AI reply returned." }),
         { status: 500, headers: { "Content-Type": "application/json" } }
       );
     }
@@ -50,10 +51,10 @@ export async function POST(req: Request) {
 
   } catch (err: any) {
     const errorMessage = err?.message || JSON.stringify(err);
-    console.error("Unhandled error:", errorMessage);
+    console.error("Chatbot crashed:", errorMessage);
 
     return new Response(
-      JSON.stringify({ reply: `Unhandled Error: ${errorMessage}` }),
+      JSON.stringify({ reply: `Server Error: ${errorMessage}` }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
