@@ -14,13 +14,13 @@ export async function POST(req: Request) {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: message }],
-        temperature: 0.7,
-      }),
+        temperature: 0.7
+      })
     });
 
     const data = await openAiRes.json();
@@ -32,14 +32,18 @@ export async function POST(req: Request) {
     }
 
     return new Response(JSON.stringify({ reply: aiMessage }), {
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" }
     });
 
   } catch (err: unknown) {
     let errorBody = "Unknown error";
 
     if (err instanceof Response) {
-      errorBody = await err.text();
+      try {
+        errorBody = await err.text();
+      } catch {
+        errorBody = "Failed to parse error response";
+      }
     } else if (err instanceof Error) {
       errorBody = err.message;
     } else {
@@ -47,6 +51,8 @@ export async function POST(req: Request) {
     }
 
     console.error("OpenAI API error:", errorBody);
+
+    // 👇 This message will now be visible in the frontend
     return new Response("OpenAI Error: " + errorBody, { status: 500 });
   }
 }
