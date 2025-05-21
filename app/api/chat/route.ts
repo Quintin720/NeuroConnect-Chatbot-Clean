@@ -37,7 +37,8 @@ export async function POST(req: NextRequest) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (err) {
-    console.error("Chatbot error:", err);
+    const errorBody = err instanceof Response ? await err.text() : err.message || String(err);
+console.error("OpenAI API error:", errorBody);
     return new Response("Server error", { status: 500 });
   }
 }
