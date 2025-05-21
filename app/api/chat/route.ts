@@ -1,8 +1,10 @@
 // app/api/chat/route.ts
 
-export const dynamic = 'force-dynamic';
+import { NextRequest } from "next/server";
 
-export async function POST(req: Request) {
+export const dynamic = "force-dynamic";
+
+export async function POST(req: NextRequest) {
   try {
     const { message } = await req.json();
 
@@ -13,14 +15,14 @@ export async function POST(req: Request) {
     const openAiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: message }],
-        temperature: 0.7
-      })
+        temperature: 0.7,
+      }),
     });
 
     const data = await openAiRes.json();
@@ -32,7 +34,7 @@ export async function POST(req: Request) {
     }
 
     return new Response(JSON.stringify({ reply: aiMessage }), {
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     });
   } catch (err) {
     console.error("Chatbot error:", err);
