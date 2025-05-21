@@ -1,10 +1,8 @@
 // app/api/chat/route.ts
 
-import { NextRequest } from "next/server";
+export const dynamic = 'force-dynamic';
 
-export const dynamic = "force-dynamic";
-
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
     const { message } = await req.json();
 
@@ -15,7 +13,7 @@ export async function POST(req: NextRequest) {
     const openAiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -36,9 +34,19 @@ export async function POST(req: NextRequest) {
     return new Response(JSON.stringify({ reply: aiMessage }), {
       headers: { "Content-Type": "application/json" },
     });
-  } catch (err) {
-    const errorBody = err instanceof Response ? await err.text() : err.message || String(err);
-console.error("OpenAI API error:", errorBody);
-    return new Response("Server error", { status: 500 });
+
+  } catch (err: unknown) {
+    let errorBody = "Unknown error";
+
+    if (err instanceof Response) {
+      errorBody = await err.text();
+    } else if (err instanceof Error) {
+      errorBody = err.message;
+    } else {
+      errorBody = String(err);
+    }
+
+    console.error("OpenAI API error:", errorBody);
+    return new Response("OpenAI Error: " + errorBody, { status: 500 });
   }
 }
