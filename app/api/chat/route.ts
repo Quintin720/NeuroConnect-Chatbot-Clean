@@ -49,9 +49,11 @@ export async function POST(req: Request) {
       headers: { "Content-Type": "application/json" }
     });
 
-  } catch (err: any) {
-    const errorMessage = err?.message || JSON.stringify(err);
-    console.error("Chatbot crashed:", errorMessage);
+} catch (err) {
+  const errorBody = err instanceof Response ? await err.text() : String(err);
+  console.error("OpenAI API error:", errorBody);
+  return new Response("OpenAI Error: " + errorBody, { status: 500 });
+}
 
     return new Response(
       JSON.stringify({ reply: `Server Error: ${errorMessage}` }),
