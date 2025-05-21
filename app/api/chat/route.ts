@@ -11,14 +11,17 @@
   } else if (err instanceof Error) {
     errorBody = err.message;
   } else {
-    errorBody = String(err);
+    errorBody = JSON.stringify(err);
   }
 
   console.error("OpenAI API error:", errorBody);
 
-  // This sends the actual error to the UI so you can debug it
-  return new Response(JSON.stringify({ reply: "OpenAI Error: " + errorBody }), {
-    headers: { "Content-Type": "application/json" },
-    status: 500,
-  });
+  // Return the error directly in the reply message
+  return new Response(
+    JSON.stringify({ reply: `OpenAI Error: ${errorBody}` }),
+    {
+      headers: { "Content-Type": "application/json" },
+      status: 500,
+    }
+  );
 }
