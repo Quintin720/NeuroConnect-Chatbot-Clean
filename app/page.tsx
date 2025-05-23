@@ -1,11 +1,9 @@
-import Chatbot from '../components/Chatbot';
-
-export default function Page() {
+// app/page.tsx
+export default function HomePage() {
   return (
-    <main style={{ padding: '2rem' }}>
-      <h1>Welcome to NeuroConnect Chatbot</h1>
-      <p>This is the homepage. You can try the chatbot below.</p>
-      <Chatbot />
+    <main className="p-8 text-center">
+      <h1 className="text-4xl font-bold text-yellow-700 mb-4">Welcome to NeuroConnect Chatbot</h1>
+      <p className="mb-6">Your neuroaffirmative assistant is here to help.</p>
     </main>
   );
 }
