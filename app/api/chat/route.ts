@@ -1,27 +1,23 @@
+
+import { NextResponse } from 'next/server';
+
 export async function POST(req: Request) {
-  const { message } = await req.json();
+  const { prompt } = await req.json();
 
-  if (!process.env.OPENAI_API_KEY) {
-    return new Response("Missing API Key", { status: 500 });
-  }
-
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
     headers: {
-      "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-      "Content-Type": "application/json"
+      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: message }],
-      temperature: 0.7,
-    })
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: prompt }],
+    }),
   });
 
-  const data = await response.json();
-  const aiMessage = data.choices?.[0]?.message?.content?.trim();
+  const data = await res.json();
+  const reply = data.choices?.[0]?.message?.content || 'No response';
 
-  return new Response(JSON.stringify({ reply: aiMessage }), {
-    headers: { "Content-Type": "application/json" }
-  });
+  return NextResponse.json({ reply });
 }
