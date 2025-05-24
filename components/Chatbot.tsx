@@ -13,7 +13,7 @@ export default function Chatbot() {
     setMessages(prev => [...prev, userMessage]);
 
     try {
-      const res = await fetch('https://neuroconnect-chatbot-clean.vercel.app/api/chat', {
+      const res = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
