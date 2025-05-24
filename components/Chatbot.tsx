@@ -13,13 +13,13 @@ export default function Chatbot() {
     setMessages(prev => [...prev, userMessage]);
 
     try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: input }),
-      });
+      const res = await fetch('https://chatbot.neuroconnect.ie/api/chat', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ message: input }),
+});
 
       const data = await res.json();
 
